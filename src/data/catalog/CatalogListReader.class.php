@@ -1,55 +1,62 @@
 <?php
 
-LoadIBC1Class('DataList', 'datamodels');
+LoadIBC1Class('ItemList', 'util');
+LoadIBC1Class('IPagination', 'data');
+LoadIBC1Class('Paginator', 'data');
 
 /**
- *
- * @version 0.7.20111207
+ * a read-only list of catalogs.
+ * 
+ * @version 0.8.20130123
  * @author Zhiji Gu <gu_zhiji@163.com>
- * @copyright &copy; 2010-2012 InterBox Core 1.2 for PHP, GuZhiji Studio
- * @package interbox.core.datamodels.catalog
+ * @copyright &copy; 2010-2013 InterBox Core 1.2 for PHP, GuZhiji Studio
+ * @package interbox.core.data.catalog
  */
-class CatalogListReader extends DataList {
+class CatalogListReader extends ItemList implements IPagination {
 
-    protected $list_sql = NULL;
+    protected $_sql = NULL;
+    protected $_service;
+    protected $_fields;
+    protected $_paginator;
 
-    function __construct($ServiceName) {
-        parent::__construct();
-        $this->OpenService($ServiceName);
+    function __construct($service) {
+        $this->_service = DataService::GetService($service, 'catalog');
+        $conn = $this->_service->GetDBConn();
+        $this->_sql = $conn->CreateSelectSTMT($this->_service->GetDataTableName('catalog'));
+        $this->_fields = array(
+            'clgID' => 'ID',
+            'clgName' => 'Name',
+            'clgOrdinal' => 'Ordinal',
+            'clgUID' => 'UID',
+            'clgParentID' => 'ParentID',
+            'clgVisitLevel' => 'VisitLevel',
+            'clgAdminLevel' => 'AdminLevel'
+        );
+        $this->_paginator = new Paginator();
     }
 
-    public function OpenService($ServiceName) {
-        parent::OpenService($ServiceName, 'catalog');
-        $conn = $this->GetDBConn();
-        $this->list_sql = $conn->CreateSelectSTMT($this->GetDataTableName('catalog'));
+    public function GetDataService() {
+        return $this->_service;
     }
 
     /**
      * get basic attributes of a catalog
      * 
      * <code>
-     * LoadIBC1Class('CatalogListReader','datamodels.catalog');
+     * LoadIBC1Class('CatalogListReader','data.catalog');
      * $reader=new CatalogListReader('catalogtest');
      * try{
      *      var_dump($reader->GetCatalog(1));
      * } catch (Exception $ex) {
      *      echo 'not found';
      * }
-     * $reader->CloseService();
      * </code>
      * 
      * @param int $id catalog id
      * @return object
      */
     public function GetCatalog($id) {
-
-        $conn = $this->GetDBConn();
-        $sql = $conn->CreateSelectSTMT($this->GetDataTableName('catalog'));
-        self::AddFields($sql);
-        $sql->AddEqual('clgID', $id, IBC1_DATATYPE_INTEGER);
-        $sql->Execute();
-        $r = $sql->Fetch(1);
-        $sql->CloseSTMT();
+        $r = $this->_service->ReadRecord('catalog', 'clgID', $id, $this->_fields);
         if (!$r) {
             throw new ServiceException("not exist:$id");
         }
@@ -60,7 +67,7 @@ class CatalogListReader extends DataList {
      * get a catalog and add it into the list as an item
      * 
      * <code>
-     * LoadIBC1Class('CatalogListReader','datamodels.catalog');
+     * LoadIBC1Class('CatalogListReader','data.catalog');
      * $reader=new CatalogListReader('catalogtest');
      * $reader->LoadCatalog(2);
      * $reader->MoveFirst();
@@ -68,7 +75,6 @@ class CatalogListReader extends DataList {
      *      var_dump($item);
      *      echo "<hr />\n";
      * }
-     * $reader->CloseService();
      * </code>
      * only support single-page list,it is a single-page list when PageSize=0
      * @param int $id  catalog id
@@ -83,22 +89,9 @@ class CatalogListReader extends DataList {
     }
 
     /**
-     * add all necessary fields into the given SQL
-     * @param IFieldExpList $sql 
-     */
-    private static function AddFields(IFieldExpList $sql) {
-        $sql->AddField('clgID', 'ID');
-        $sql->AddField('clgName', 'Name');
-        $sql->AddField('clgOrdinal', 'Ordinal');
-        $sql->AddField('clgUID', 'UID');
-        $sql->AddField('clgParentID', 'ParentID');
-        $sql->AddField('clgGID', 'GID');
-        $sql->AddField('clgAdminLevel', 'AdminGrade');
-    }
-
-    /**
-     * load a path of catalogs from the given catalog to 
-     * the leaf node of the hierarchy
+     * load catalogs in the path  from the given catalog to 
+     * the leaf node of the hierarchy.
+     * 
      * @param int $id  catalog id of the root
      */
     public function LoadPath($id) {
@@ -107,10 +100,10 @@ class CatalogListReader extends DataList {
             throw new ServiceException('only support single-page list');
         }
 
-        $conn = $this->GetDBConn();
-        $sql = $conn->CreateSelectSTMT($this->GetDataTableName('catalog'));
-        self::AddFields($sql);
-
+        $conn = $this->_service->GetDBConn();
+        $sql = $conn->CreateSelectSTMT($this->_service->GetDataTableName('catalog'));
+        foreach ($this->_fields as $f => $alias)
+            $sql->AddField($f, $alias);
         $sql->AddEqual('clgID', $id);
         $sql->Execute();
         $r = $sql->Fetch(1);
@@ -132,86 +125,90 @@ class CatalogListReader extends DataList {
     }
 
     /**
-     * set a constraint of name on the list loading
+     * set name as criteria for loading the list.
+     * 
      * @param string $name  catalog name, a proposed condition on the Name field
      * @param bool $exact optional, the default value is FALSE 
      * such that an exact match is NOT enforced
      */
     public function SetName($name, $exact = FALSE) {
-        if ($this->list_sql != NULL) {
-            $sql = $this->list_sql;
-            if ($name != '') {
-                if ($exact)
-                    $sql->AddEqual('clgName', $name, IBC1_DATATYPE_PLAINTEXT, IBC1_LOGICAL_AND);
-                else
-                    $sql->AddLike('clgName', $name, IBC1_DATATYPE_PLAINTEXT, IBC1_LOGICAL_AND);
-            }
+        if ($name != '') {
+            if ($exact)
+                $this->_sql->AddEqual('clgName', $name, IBC1_DATATYPE_PLAINTEXT, IBC1_LOGICAL_AND);
+            else
+                $this->_sql->AddLike('clgName', $name, IBC1_DATATYPE_PLAINTEXT, IBC1_LOGICAL_AND);
         }
     }
 
     /**
-     * set a constraint of parent catalog on the list loading
+     * set parent catalog as criteria for loading the list.
+     * 
      * @param int $id catalog id, a proposed condition on parent catalog
      */
     public function SetParentCatalog($id) {
-        if ($this->list_sql != NULL) {
-            $sql = $this->list_sql;
-            if ($id >= 0) {
-                $sql->AddEqual('clgParentID', $id, IBC1_DATATYPE_INTEGER, IBC1_LOGICAL_AND);
-            }
+        if ($id >= 0) {
+            $this->_sql->AddEqual('clgParentID', $id, IBC1_DATATYPE_INTEGER, IBC1_LOGICAL_AND);
         }
     }
 
     /**
-     * set a constraint of admin group on the list loading
-     * @param int $gid user group id, a proposed condition on admin group
+     * set a minimal user level for visitors as criteria for loading the list.
+     * 
+     * <ul>
+     * <li>level=0 - visible to everyone</li>
+     * <li>level>0 - visible to users with or with higher levels</li>
+     * <li>level=-1 - invisible to anyone except the author</li>
+     * </ul>
+     * @param int $level
      */
-    public function SetAdminGroup($gid) {
-        if ($this->list_sql != NULL) {
-            $sql = $this->list_sql;
-            if ($gid > 0) {
-                $sql->AddEqual('clgGID', $gid, IBC1_DATATYPE_INTEGER, IBC1_LOGICAL_AND);
-            }
-        }
+    public function SetVisitLevel($level) {
+        $level = intval($level);
+        if ($level < 0)
+            $this->_sql->AddCondition('clgVisitLevel<0');
+        else
+            $this->_sql->AddCondition('clgVisitLevel>=' . $level);
     }
 
     /**
-     * set a constraint of visitor group on the list loading
-     * @param int $gid user group id, a proposed condition on visitor group
+     * set a minimal user level for admins as criteria for loading the list.
+     *
+     * <ul>
+     * <li>level>0 - admin by users with or with higher levels</li>
+     * <li>level=-1 - only the author can admin</li>
+     * </ul>
+     * @param int $level
      */
-    public function SetVisitGroup($gid) {
-        if ($this->list_sql != NULL) {
-            $sql = $this->list_sql;
-            if ($gid > 0) {
-                $sql->AddEqual('clgVisitGID', $gid, IBC1_DATATYPE_INTEGER, IBC1_LOGICAL_AND);
-            }
+    public function SetAdminLevel($level) {
+        $level = intval($level);
+        if ($level != 0) {
+            if ($level < 0)
+                $this->_sql->AddCondition('clgAdminLevel<0');
+            else
+                $this->_sql->AddCondition('clgAdminLevel>=' . $level);
         }
     }
 
     public function OrderBy($fieldname, $order) {
-        if ($this->list_sql != NULL) {
-            $sql = $this->list_sql;
-            if ($order != IBC1_ORDER_ASC)
-                $order = IBC1_ORDER_DESC;
-            switch ($fieldname) {
-                case 'name':
-                    $sql->OrderBy('clgName', $order);
-                    break;
-                case 'ordinal':
-                    $sql->OrderBy('clgOrdinal', $order);
-                    break;
+        if ($order != IBC1_ORDER_ASC)
+            $order = IBC1_ORDER_DESC;
+        switch ($fieldname) {
+            case 'name':
+                $this->_sql->OrderBy('clgName', $order);
+                break;
+            case 'ordinal':
+                $this->_sql->OrderBy('clgOrdinal', $order);
+                break;
 
-                default:
-                    throw new ServiceException('not supported');
-            }
+            default:
+                throw new ServiceException('not supported');
         }
     }
 
     /**
-     * load the list with the constraints set in this class
+     * load the list.
      * 
      * <code>
-     * LoadIBC1Class('CatalogListReader','datamodels.catalog');
+     * LoadIBC1Class('CatalogListReader','data.catalog');
      * $reader=new CatalogListReader('catalogtest');
      * $reader->LoadList();
      * $reader->MoveFirst();
@@ -219,49 +216,41 @@ class CatalogListReader extends DataList {
      *      var_dump($item);
      *      echo "<hr />\n";
      * }
-     * $reader->CloseService();
      * </code>
      */
     public function LoadList() {
-        if ($this->list_sql === NULL) {
-            throw new ServiceException('not initialized properly');
-        }
-
-        $sql = $this->list_sql;
-        $sql->ClearFields();
-        $sql->AddField('COUNT(clgID)');
-        $this->GetCounts1($sql);
-        $sql->ClearFields();
-        self::AddFields($sql);
-        $sql->SetLimit($this->GetPageSize(), $this->GetPageNumber());
-        $sql->Execute();
-        $this->Clear();
-        while ($r = $sql->Fetch(1)) {
-            $this->AddItem($r);
-        }
-        $this->GetCounts2();
-        $sql->CloseSTMT();
+        $this->_paginator->GetCounts1($this->_sql);
+        $this->_service->ListRecords($this, $this->_paginator, $this->_sql, $this->_fields);
+        $this->_paginator->GetCounts2($this->Count());
     }
 
-    //the following is for convenience
     public function OpenSubCatalog($ID) {
         $this->SetParentCatalog($ID);
         $this->LoadList();
     }
 
-    public function GetAdminList($CatalogID) {
+    public function GetPageCount() {
+        return $this->_paginator->PageCount;
+    }
 
-        $conn = $this->GetDBConn();
-        $sql = $conn->CreateSelectSTMT($this->GetDataTableName('admin'));
-        $sql->AddField('admUID');
-        $sql->AddEqual('admCatalogID', $CatalogID);
-        $l = new ItemList();
-        $sql->Execute();
-        while ($r = $sql->Fetch(1)) {
-            $l->AddItem($r->admUID);
-        }
-        $sql->CloseSTMT();
-        return $l;
+    public function GetPageNumber() {
+        return $this->_paginator->PageNumber;
+    }
+
+    public function GetPageSize() {
+        return $this->_paginator->PageSize;
+    }
+
+    public function GetTotalCount() {
+        return $this->_paginator->TotalCount;
+    }
+
+    public function SetPageNumber($n) {
+        $this->_paginator->SetPageNumber($n);
+    }
+
+    public function SetPageSize($s) {
+        $this->_paginator->SetPageSize($s);
     }
 
 }

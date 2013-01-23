@@ -1,16 +1,20 @@
 <?php
 
-abstract class DataServiceManager {
+/**
+ * 
+ * @version 0.8.20130119
+ * @author Zhiji Gu <gu_zhiji@163.com>
+ * @copyright &copy; 2010-2013 InterBox Core 1.2 for PHP, GuZhiji Studio
+ * @package interbox.core.data
+ */
+abstract class DataServiceManager extends DataService {
 
-    private $_connm;
-    private $_servicename;
-    private $_servicetype;
+    const E_INSTALLED = 1;
+    const E_NOT_INSTALLED = 2;
+    const E_INSTALL_FAILED = 3;
 
     function __construct($ServiceName, $ServiceType) {
-        LoadIBC1Class('DBConnManager', 'datamodels');
-        $this->_connm = new DBConnManager($ServiceName, $ServiceType);
-        $this->_servicename = $ServiceName;
-        $this->_servicetype = $ServiceType;
+        parent::__construct($ServiceName, $ServiceType);
     }
 
     /**
@@ -53,30 +57,6 @@ abstract class DataServiceManager {
             }
         }
         return TRUE;
-    }
-
-    /**
-     * get the database connection provider
-     * @return DBConnProvider 
-     */
-    public function GetDBConnProvider() {
-        return $this->_connm->GetDBConnProvider();
-    }
-
-    /**
-     * get a database connection (DBConn) object
-     * @return DBConn
-     */
-    public function GetDBConn() {
-        return $this->_connm->GetDBConn();
-    }
-
-    public function GetServiceName() {
-        return $this->_servicename;
-    }
-
-    public function GetServiceType() {
-        return $this->_servicetype;
     }
 
     public abstract function IsInstalled();

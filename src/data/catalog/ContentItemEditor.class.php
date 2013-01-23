@@ -1,33 +1,30 @@
 <?php
 
-LoadIBC1Class('DataItem', 'datamodels');
-LoadIBC1Lib('common', 'datamodels.catalog');
+LoadIBC1Class('PropertyList', 'util');
 
 /**
  *
- * @version 0.7.20111212
+ * @version 0.8.20130123
  * @author Zhiji Gu <gu_zhiji@163.com>
- * @copyright &copy; 2010-2012 InterBox Core 1.2 for PHP, GuZhiji Studio
- * @package interbox.core.datamodels.catalog
+ * @copyright &copy; 2010-2013 InterBox Core 1.2 for PHP, GuZhiji Studio
+ * @package interbox.core.data.catalog
  */
-class ContentItemEditor extends DataItem {
+class ContentItemEditor extends PropertyList {
 
     protected $IsNew = TRUE;
     protected $ID = 0;
-    protected $AdminGrade = -1;
-    protected $VisitGrade = -1;
+    protected $dataservice;
 
-    function __construct($ServiceName) {
-        parent::__construct();
-        $this->OpenService($ServiceName);
+    function __construct($service) {
+        $this->dataservice = DataService::GetService($service, 'catalog');
     }
 
-    public function OpenService($ServiceName) {
-        parent::OpenService($ServiceName, 'catalog');
+    public function GetDataService() {
+        return $this->dataservice;
     }
 
     /**
-     * prepares to create a new content
+     * to create a new content.
      * 
      * initializes the editor to receive data,
      *  but does not save data before Save() is invoked.
@@ -38,24 +35,24 @@ class ContentItemEditor extends DataItem {
     }
 
     /**
-     * prepares to modify an existing content
+     * to modify an existing content.
      * 
      * initializes the editor to receive changes,
      *  but does not save changes before Save() is invoked.
+     * 
      * @param int $ID content id
      */
     public function Open($ID) {
-
         $this->IsNew = FALSE;
         $this->ID = intval($ID);
     }
 
     /**
-     * save the content into database
+     * save the content into database.
      * 
-     * add if Create() invoked
+     * add if Create() invoked:
      * <code>
-     * LoadIBC1Class('ContentItemEditor', 'datamodels.catalog');
+     * LoadIBC1Class('ContentItemEditor', 'data.catalog');
      * $editor=new ContentItemEditor('catalogtest');
      * $editor->Create();
      * $editor->SetName('content 2');
@@ -65,12 +62,11 @@ class ContentItemEditor extends DataItem {
      * }catch(Exception $ex){
      *     echo 'failed:'.$ex->getMessage()."\n";
      * }
-     * $editor->CloseService();
      * </code>
      * 
-     * update if Open() invoked
+     * update if Open() invoked:
      * <code>
-     * LoadIBC1Class('ContentItemEditor', 'datamodels.catalog');
+     * LoadIBC1Class('ContentItemEditor', 'data.catalog');
      * $editor=new ContentItemEditor('catalogtest');
      * $editor->Open(1);
      * $editor->SetName('content 1');
@@ -80,7 +76,6 @@ class ContentItemEditor extends DataItem {
      * }catch(Exception $ex){
      *     echo 'failed:'.$ex->getMessage()."\n";
      * }
-     * $editor->CloseService();
      * </code>
      * @param int $CatalogID unnecessary if Open() invoked
      */
@@ -91,8 +86,7 @@ class ContentItemEditor extends DataItem {
             if ($CatalogID <= 0) {
                 throw new ServiceException('parent catalog not found');
             }
-            $conn = $this->GetDBConn();
-            if (!catalogExists($CatalogID, $this->GetDataTableName('catalog'), $conn)) {
+            if (!$this->dataservice->RecordExists('catalog', 'clgID', $CatalogID)) {
                 throw new ServiceException('parent catalog not found');
             }
             $this->SetValue('cntCatalogID', $CatalogID, IBC1_DATATYPE_INTEGER);
@@ -100,23 +94,15 @@ class ContentItemEditor extends DataItem {
             //check essential fields
             if ($this->GetValue('cntName') == NULL)
                 throw new ServiceException('content name has not been set');
-//            if ($this->GetValue("cntAdminUID") == NULL)
-//                throw new ServiceException("admin has not been set");
+//            if ($this->GetValue("cntUID") == NULL)
+//                throw new ServiceException("user has not been set");
+            $this->SetValue('cntTimeCreated', 'CURRENT_TIMESTAMP()', IBC1_DATATYPE_EXPRESSION);
             //insert
-            $conn = $this->GetDBConn();
-            $sql = $conn->CreateInsertSTMT($this->GetDataTableName('content'));
-            $this->MoveFirst();
-            while (list($key, $item) = $this->GetEach()) {
-                $sql->AddValue($key, $item[0], $item[1]);
+            $id = $this->dataservice->InsertRecord('content', $this);
+            if ($id) {
+                $this->ID = $id;
+                $this->IsNew = FALSE;
             }
-
-            $sql->AddValue('cntTimeCreated', 'CURRENT_TIMESTAMP()', IBC1_DATATYPE_EXPRESSION);
-
-            $sql->Execute();
-
-            $this->ID = $sql->GetLastInsertID();
-            $sql->CloseSTMT();
-            $this->IsNew = FALSE;
         } else if ($this->ID > 0) {//modify content
             //if changed
             if ($this->Count() == 0) {
@@ -124,52 +110,34 @@ class ContentItemEditor extends DataItem {
             }
 
             //update
-            $conn = $this->GetDBConn();
-            $sql = $conn->CreateUpdateSTMT();
-            $sql->SetTable($this->GetDataTableName('content'));
-            $this->MoveFirst();
-            while (list($key, $item) = $this->GetEach()) {
-                $sql->AddValue($key, $item[0], $item[1]);
-            }
-            $sql->AddValue('cntTimeUpdated', 'CURRENT_TIMESTAMP()', IBC1_DATATYPE_EXPRESSION);
-            $sql->AddEqual('cntID', $this->ID);
-            $sql->Execute();
-            $sql->CloseSTMT();
+            $this->SetValue('cntTimeUpdated', 'CURRENT_TIMESTAMP()', IBC1_DATATYPE_EXPRESSION);
+            $this->dataservice->UpdateRecord('content', 'cntID', $this->ID, $this);
         } else {
             throw new ServiceException('no content is open');
         }
     }
 
     /**
-     * delete content
+     * delete content.
      * 
      * @param int $id   optional, delete the opened one if not given
      */
     public function Delete($id = 0) {
-
         if ($id == 0)
             $id = $this->ID;
-        $conn = $this->GetDBConn();
-//        if (!contentExists($id,$this->GetDataTableName("content"), $conn)) {
-//            throw new ServiceException("no access");
-//        }
-        $sql = $conn->CreateDeleteSTMT($this->GetDataTableName('content'));
-        $sql->AddEqual('cntID', $id);
-        $sql->Execute();
-        $sql->CloseSTMT();
+        $this->dataservice->DeleteRecord('content', 'cntID', $id);
     }
 
     /**
-     * move the catalog to a new parent catalog
+     * move the catalog to a new parent catalog.
+     * 
      * @param int $CatalogID    parent catalog id
      */
     public function MoveTo($CatalogID) {
         if ($this->IsNew) {
             throw new ServiceException('cannot move an unsaved content');
         }
-        $CatalogID = intval($CatalogID);
-        $conn = $this->GetDBConn();
-        if (!catalogExists($CatalogID, $this->GetDataTableName('catalog'), $conn)) {
+        if (!$this->dataservice->RecordExists('catalog', 'clgID', $CatalogID)) {
             throw new ServiceException('the catalog does not exist');
         } else {
             $this->SetValue('cntCatalogID', $CatalogID);
@@ -177,7 +145,8 @@ class ContentItemEditor extends DataItem {
     }
 
     /**
-     * get id if not new
+     * get id if not new.
+     * 
      * @return int
      */
     public function GetID() {
@@ -188,7 +157,7 @@ class ContentItemEditor extends DataItem {
     }
 
     /**
-     * set content name (essential)
+     * set content name (required).
      * 
      * @param string $name pure text with no html
      */
@@ -197,7 +166,7 @@ class ContentItemEditor extends DataItem {
     }
 
     /**
-     * set content author
+     * set content author.
      * 
      * @param string $author pure text with no html
      */
@@ -209,21 +178,21 @@ class ContentItemEditor extends DataItem {
         $this->SetValue('cntKeywords', $keywords, IBC1_DATATYPE_WORDLIST);
     }
 
-    public function SetPointValue($n) {
-        $this->SetValue('cntPointValue', $n);
+    public function SetWorth($n) {
+        $this->SetValue('cntWorth', $n);
     }
 
     /**
-     * set content ordinal for ordering
+     * set content ordinal for ordering.
      * 
-     * does not check for repetition nor continuity
+     * does not check for repetition nor continuity.
      * @param int $n any integers
      */
     public function SetOrdinal($n) {
         $this->SetValue('cntOrdinal', $n);
     }
 
-    public function SetAdminUID($uid) {
+    public function SetUID($uid) {
         $this->SetValue('cntUID', $uid, IBC1_DATATYPE_PLAINTEXT);
     }
 
@@ -235,47 +204,37 @@ class ContentItemEditor extends DataItem {
         $this->SetValue('cntVisitCount', 0);
     }
 
+    public function SetModule($module) {
+        $this->SetValue('cntModule', $module, IBC1_DATATYPE_PLAINTEXT);
+    }
+
     /**
-     * set a minimal user level for visitors
+     * set minimal user levels for visitors and for admins
      * 
+     * @param int $visitlevel
      * <ul>
      * <li>level=0 - visible to everyone</li>
      * <li>level>0 - visible to users with or with higher levels</li>
      * <li>level=-1 - invisible to anyone except the author</li>
      * </ul>
-     * @param int $g
-     * @return boolean 
-     */
-    public function SetVisitLevel($g) {
-        $g = intval($g);
-        if ($g < 0)
-            $g = -1;
-        if ($g <= $this->AdminGrade) {
-            $this->SetValue('cntVisitLevel', $g);
-            return TRUE;
-        }
-        return FALSE;
-    }
-
-    /**
-     * set a minimal user level for admins
-     *
+     * @param int $adminlevel
      * <ul>
      * <li>level>0 - admin by users with or with higher levels</li>
-     * <li>level=-1 - only the author can make a change</li>
+     * <li>level=-1 - only the author can admin</li>
      * </ul>
-     * @param int $g
-     * @return boolean 
+     * @return bool
      */
-    public function SetAdminLevel($g) {
-        $g = intval($g);
-        if ($g < 0)
-            $g = -1;
-        if ($g != 0) {
-            if ($g >= $this->VisitGrade) {
-                $this->SetValue('cntAdminLevel', $g);
-                return TRUE;
-            }
+    public function SetLevels($visitlevel, $adminlevel) {
+        $visitlevel = intval($visitlevel);
+        $adminlevel = intval($adminlevel);
+        if ($visitlevel < 0)
+            $visitlevel = -1;
+        if ($adminlevel < 0)
+            $adminlevel = -1;
+        if ($visitlevel <= $adminlevel && $adminlevel != 0) {
+            $this->SetValue('cntVisitLevel', $visitlevel);
+            $this->SetValue('cntAdminLevel', $adminlevel);
+            return TRUE;
         }
         return FALSE;
     }
