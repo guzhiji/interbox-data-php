@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class UserPassport</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class UserPassport</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">An utility for managing user sessions</p>
+<p class="description"><p>Demo:  <div class="src-code"><ol><li><div class="src-line">&nbsp;<a href="../interbox-core/_core1.lib.php.html#functionLoadIBC1Class">LoadIBC1Class</a><span class="src-sym">(</span><span class="src-str">'UserPassport'</span><span class="src-sym">,&nbsp;</span><span class="src-str">'data.user'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$up</span>=<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../interbox-core-data-user/UserPassport.html">UserPassport</a></span><span class="src-sym">(</span><span class="src-str">'usertest'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;try<span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$up</span><span class="src-sym">-&gt;</span><a href="../interbox-core-data-user/UserPassport.html#methodLogin">Login</a><span class="src-sym">(</span><span class="src-str">'webmaster'</span><span class="src-sym">,</span><span class="src-str">'mypwd'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">&quot;login!\n&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-str">&quot;welcome&nbsp;&quot;</span>.<span class="src-var">$up</span><span class="src-sym">-&gt;</span><a href="../interbox-core-data-user/UserPassport.html#methodGetUID">GetUID</a><span class="src-sym">(</span><span class="src-sym">)</span>.<span class="src-str">&quot;\n&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}&nbsp;</span>catch<span class="src-sym">(</span><span class="src-id">Exception&nbsp;</span><span class="src-var">$ex</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$ex</span><span class="src-sym">-&gt;</span><span class="src-id">getMessage</span><span class="src-sym">(</span><span class="src-sym">)</span>.<span class="src-str">&quot;\n&quot;</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-var">$up</span><span class="src-sym">-&gt;</span><a href="../interbox-core-data-user/UserPassport.html#methodLogout">Logout</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">if</span><span class="src-sym">(</span><span class="src-sym">!</span><span class="src-var">$up</span><span class="src-sym">-&gt;</span><a href="../interbox-core-data-user/UserPassport.html#methodIsOnline">IsOnline</a><span class="src-sym">(</span><span class="src-sym">))&nbsp;</span>echo&nbsp;<span class="src-str">&quot;logout!\n&quot;</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Zhiji Gu &lt;<a href="mailto:gu_zhiji@163.com">gu_zhiji@163.com</a>&gt;</li>
+				<li><span class="field">version:</span> 0.6</li>
+				<li><span class="field">copyright:</span> &amp;copy; 2010-2013 InterBox Core 1.2 for PHP, GuZhiji Studio</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_data---user---UserPassport.class.php.html">/data/user/UserPassport.class.php</a> (line <span class="field">27</span>)
+		</p>
+		
+				
+		<pre><a href="../interbox-core-data/DataService.html">DataService</a>
+   |
+   --UserPassport</pre>
+	
+			</div>
+</div>
+
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-vars">Vars</a>
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<a href="#E_UNAUTHORIZED" title="details" class="const-name">E_UNAUTHORIZED</a> = 					<span class="var-type"> 1</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">UserPassport</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$ServiceName</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetFace" title="details" class="method-name">GetFace</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetLevel" title="details" class="method-name">GetLevel</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetLoginCount" title="details" class="method-name">GetLoginCount</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetLoginIP" title="details" class="method-name">GetLoginIP</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetLoginTime" title="details" class="method-name">GetLoginTime</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetNickName" title="details" class="method-name">GetNickName</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetPoints" title="details" class="method-name">GetPoints</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetRegisterTime" title="details" class="method-name">GetRegisterTime</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetUID" title="details" class="method-name">GetUID</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#GetValue" title="details" class="method-name">GetValue</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#IsOnline" title="details" class="method-name">IsOnline</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#IsUserAdmin" title="details" class="method-name">IsUserAdmin</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#Login" title="details" class="method-name">Login</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$UID</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$PWD</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#Logout" title="details" class="method-name">Logout</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#OpenService" title="details" class="method-name">OpenService</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$ServiceName</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#SetValue" title="details" class="method-name">SetValue</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+										<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../interbox-core-data/DataService.html">DataService</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../interbox-core-data/DataService.html#var$extra_args">DataService::$extra_args</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">31</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	<div class="method-signature">
+		<span class="method-result">UserPassport</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$ServiceName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$ServiceName</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../interbox-core-data/DataService.html#method__construct">DataService::__construct()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodGetFace" id="GetFace"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetFace</span> (line <span class="line-number">69</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetFace
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetLevel" id="GetLevel"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetLevel</span> (line <span class="line-number">77</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetLevel
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetLoginCount" id="GetLoginCount"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetLoginCount</span> (line <span class="line-number">85</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetLoginCount
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetLoginIP" id="GetLoginIP"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetLoginIP</span> (line <span class="line-number">97</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetLoginIP
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetLoginTime" id="GetLoginTime"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetLoginTime</span> (line <span class="line-number">93</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetLoginTime
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetNickName" id="GetNickName"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetNickName</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetNickName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetPoints" id="GetPoints"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetPoints</span> (line <span class="line-number">81</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetPoints
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetRegisterTime" id="GetRegisterTime"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetRegisterTime</span> (line <span class="line-number">89</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetRegisterTime
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetUID" id="GetUID"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetUID</span> (line <span class="line-number">65</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetUID
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodGetValue" id="GetValue"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">GetValue</span> (line <span class="line-number">41</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			GetValue
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodIsOnline" id="IsOnline"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">IsOnline</span> (line <span class="line-number">52</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			IsOnline
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodIsUserAdmin" id="IsUserAdmin"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">IsUserAdmin</span> (line <span class="line-number">61</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			IsUserAdmin
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodLogin" id="Login"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Login</span> (line <span class="line-number">101</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			Login
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$UID</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$PWD</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$UID</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$PWD</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodLogout" id="Logout"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Logout</span> (line <span class="line-number">146</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			Logout
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodOpenService" id="OpenService"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">OpenService</span> (line <span class="line-number">37</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			OpenService
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$ServiceName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$ServiceName</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodSetValue" id="SetValue"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">SetValue</span> (line <span class="line-number">48</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			SetValue
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$name</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$name</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../interbox-core-data/DataService.html">DataService</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#method__construct">DataService::__construct()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodDeleteRecord">DataService::DeleteRecord()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetDataTableName">DataService::GetDataTableName()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetDBConn">DataService::GetDBConn()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetDBConnProvider">DataService::GetDBConnProvider()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetExtraArgs">DataService::GetExtraArgs()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetService">DataService::GetService()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetServiceName">DataService::GetServiceName()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodGetServiceType">DataService::GetServiceType()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodInsertRecord">DataService::InsertRecord()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodListRecords">DataService::ListRecords()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodReadRecord">DataService::ReadRecord()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodRecordExists">DataService::RecordExists()</a></span><br>
+													<span class="method-name"><a href="../interbox-core-data/DataService.html#methodUpdateRecord">DataService::UpdateRecord()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-vars">Vars</a>
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constE_UNAUTHORIZED" id="E_UNAUTHORIZED"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">E_UNAUTHORIZED</span>
+			 = <span class="const-default"> 1</span>
+			(line <span class="line-number">29</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 03 Mar 2013 10:22:55 +0800 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>
